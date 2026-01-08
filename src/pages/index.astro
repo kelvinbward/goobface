@@ -43,18 +43,29 @@ import Pong from '../components/games/Pong.astro';
                 <!-- Game Island -->
                 <div id="games" class="pointer-events-auto max-w-4xl mx-auto">
                     <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl shadow-cyan-900/20">
-                        <div class="bg-[#0a0a0a] rounded-[22px] overflow-hidden">
+                        <div id="game-container" class="bg-[#0a0a0a] rounded-[22px] overflow-hidden relative group flex flex-col">
+                            <!-- Header: Removed absolute positioning to restore layout flow -->
                             <div class="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
-                                <div class="flex gap-2">
-                                    <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                                    <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                <div class="flex gap-2 items-center">
+                                    <button id="close-btn" class="w-3 h-3 rounded-full bg-red-500/50 hover:bg-red-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer" title="Close">
+                                        &times;
+                                    </button>
+                                    <button id="minimize-btn" class="w-3 h-3 rounded-full bg-yellow-500/50 hover:bg-yellow-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer" title="Minimize">
+                                        -
+                                    </button>
+                                    <button id="fullscreen-btn" class="w-3 h-3 rounded-full bg-green-500/50 hover:bg-green-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer" title="Fullscreen">
+                                        +
+                                    </button>
                                 </div>
                                 <span class="font-mono text-xs text-white/40">pong_engine_v1.js</span>
                             </div>
                             <Pong />
                         </div>
                     </div>
+                </div>
+
+                <div id="minimized-toast" class="mx-auto mt-12 w-fit bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full text-sm font-mono text-cyan-400 pointer-events-auto cursor-pointer hover:bg-white/20 transition-all duration-300 opacity-0 z-50 shadow-lg shadow-cyan-500/20">
+                    Game Minimized // Click Here to Restore
                 </div>
             </section>
 
@@ -208,13 +219,70 @@ import Pong from '../components/games/Pong.astro';
                 el instanceof HTMLElement && (
                     el.tagName === 'A' || 
                     el.tagName === 'BUTTON' || 
-                    el.closest('#games') // Don't firework inside game area
+                    el.closest('#games') ||
+                    el.id === 'minimized-toast'
                 )
             );
 
             if (!isInteractive) {
                 createFirework(e.clientX, e.clientY);
             }
+        });
+
+        // Fullscreen Toggle Logic
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const gameContainer = document.getElementById('game-container');
+
+        fullscreenBtn?.addEventListener('click', async () => {
+            if (!document.fullscreenElement) {
+                try {
+                    await gameContainer?.requestFullscreen();
+                } catch (err) {
+                    console.error(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // Close Button Logic
+        const closeBtn = document.getElementById('close-btn');
+        closeBtn?.addEventListener('click', () => {
+            if (confirm('Terminate session?')) {
+                window.close();
+                // Fallback if window.close() is blocked (usually is unless pushed)
+                window.location.href = 'about:blank';
+            }
+        });
+
+        // Minimize Logic
+        const minimizeBtn = document.getElementById('minimize-btn');
+        const gamesArea = document.getElementById('games');
+        const toast = document.getElementById('minimized-toast');
+        let isMinimized = false;
+
+        function toggleMinimize(shouldMinimize) {
+            isMinimized = shouldMinimize;
+            if (isMinimized) {
+                // Fix: Exit fullscreen if active to prevent UI bugs
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(err => console.log(err));
+                }
+                gamesArea?.classList.add('hidden');
+                toast?.classList.remove('opacity-0');
+            } else {
+                gamesArea?.classList.remove('hidden');
+                toast?.classList.add('opacity-0');
+            }
+        }
+
+        minimizeBtn?.addEventListener('click', () => toggleMinimize(true));
+
+        // Restore: Click on Toast
+        toast?.addEventListener('click', () => {
+            if (isMinimized) toggleMinimize(false);
         });
 
     </script>
