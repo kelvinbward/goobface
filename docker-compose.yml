@@ -1,0 +1,19 @@
+services:
+  goobface:
+    image: node:18-alpine
+    container_name: goobface-app-1
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "4321:4321"
+    command: npm run dev -- --host
+    networks:
+      - web_gateway
+    environment:
+      - NODE_ENV=development
+
+networks:
+  web_gateway:
+    external: true
