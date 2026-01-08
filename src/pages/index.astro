@@ -1,16 +1,221 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import Pong from '../components/games/Pong.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Goobface // Space">
+    <div class="relative min-h-screen overflow-hidden bg-[#050510] text-white selection:bg-cyan-500 selection:text-black">
+        
+        <!-- Interactive Space Background -->
+        <canvas id="space-canvas" class="absolute inset-0 w-full h-full pointer-events-auto"></canvas>
+
+        <!-- Content Layer (z-index to float above canvas) -->
+        <main class="relative z-10 pointer-events-none">
+            
+            <!-- Navbar / Header -->
+            <header class="w-full p-6 flex justify-between items-center pointer-events-auto">
+                <div class="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600">
+                    GOOBFACE
+                </div>
+                <nav class="flex gap-4 text-sm font-medium">
+                    <a href="https://github.com/kelvinbward/goobface" target="_blank" class="hover:text-cyan-400 transition-colors">GitHub</a>
+                </nav>
+            </header>
+
+            <!-- Hero Section -->
+            <section class="max-w-6xl mx-auto px-6 pt-12 pb-24 text-center">
+                <div class="inline-block mb-4 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-xs font-mono tracking-widest pointer-events-auto">
+                    SYSTEM STATUS: OPTIMAL
+                </div>
+                
+                <h1 class="text-7xl md:text-9xl font-black mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 animate-fade-in pointer-events-auto">
+                    EXPLORE
+                    <br />
+                    THE VOID
+                </h1>
+                
+                <p class="text-lg md:text-xl text-blue-200/60 max-w-2xl mx-auto mb-12 leading-relaxed pointer-events-auto">
+                    Interactive experiments in digital physics and web entertainment.
+                    <br />
+                    Click anywhere to ignite the stars.
+                </p>
+
+                <!-- Game Island -->
+                <div id="games" class="pointer-events-auto max-w-4xl mx-auto">
+                    <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl shadow-cyan-900/20">
+                        <div class="bg-[#0a0a0a] rounded-[22px] overflow-hidden">
+                            <div class="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
+                                <div class="flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <span class="font-mono text-xs text-white/40">pong_engine_v1.js</span>
+                            </div>
+                            <Pong />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="text-center py-12 text-white/20 text-sm font-mono pointer-events-auto">
+                2026 // GOOBFACE LABS
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Space & Firework Engine
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        let stars = [];
+
+        // Resize handling
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initStars();
+        }
+        window.addEventListener('resize', resize);
+        
+        // Star System
+        function initStars() {
+            stars = [];
+            const starCount = Math.floor((width * height) / 3000);
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.2
+                });
+            }
+        }
+
+        function drawStars() {
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Parallax movement
+                star.y -= star.speed;
+                if (star.y < 0) star.y = height;
+            });
+        }
+
+        // Firework Particle System
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 10 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                
+                this.life = 1.0;
+                this.decay = Math.random() * 0.01 + 0.005;
+                this.color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`; // Cyan/Blue range
+                this.bounces = 0;
+                this.gravity = 0.15;
+            }
+
+            update() {
+                // Physics
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce Logic (Screen edges)
+                if (this.x <= 0 || this.x >= width) {
+                    this.vx *= -0.8;
+                    this.x = this.x <= 0 ? 0 : width;
+                    this.bounces++;
+                    this.decay = 0.05; // Fade out faster after bounce
+                }
+                if (this.y <= 0 || this.y >= height) {
+                    this.vy *= -0.6; // Loss of energy
+                    this.y = this.y <= 0 ? 0 : height;
+                    this.bounces++;
+                    this.decay = 0.05; // Fade out faster after bounce
+                }
+
+                // Disappear shortly after 1 bounce (interpreted as fast fade)
+                if (this.bounces >= 1) {
+                    this.life -= 0.02; 
+                }
+
+                this.life -= this.decay;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function createFirework(x, y) {
+            const particleCount = 30 + Math.random() * 20; // Random sequence amount
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        // Animation Loop
+        function animate() {
+            // Clear with trail effect
+            ctx.fillStyle = 'rgba(5, 5, 16, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            drawStars();
+
+            // Update Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Init
+        resize();
+        animate();
+
+        // Interaction
+        document.addEventListener('click', (e) => {
+            // Check if clicking interaction elements (links, buttons, game)
+            // The pointer-events-none on main and pointer-events-auto on interactive elements 
+            // handles CSS hover, but clicks bubble up.
+            // We check composedPath to see if we clicked an anchor or button.
+            const isInteractive = e.composedPath().some(el => 
+                el instanceof HTMLElement && (
+                    el.tagName === 'A' || 
+                    el.tagName === 'BUTTON' || 
+                    el.closest('#games') // Don't firework inside game area
+                )
+            );
+
+            if (!isInteractive) {
+                createFirework(e.clientX, e.clientY);
+            }
+        });
+
+    </script>
+</Layout>
