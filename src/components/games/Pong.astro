@@ -1,25 +1,45 @@
 ---
+
 ---
 
-<div id="pong-game" class="w-full flex-1 min-h-[400px] bg-black rounded-lg overflow-hidden border border-gray-700 shadow-2xl relative">
-    <div id="start-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-        <button id="start-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors">
+<div
+    id="pong-game"
+    class="w-full flex-1 min-h-[400px] bg-black rounded-lg overflow-hidden border border-gray-700 shadow-2xl relative"
+>
+    <div
+        id="start-overlay"
+        class="absolute inset-0 flex items-center justify-center bg-black/80 z-10"
+    >
+        <button
+            id="start-btn"
+            class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors"
+        >
             Start Game
         </button>
     </div>
 </div>
 
 <script>
-    import Phaser from 'phaser';
+    import Phaser from "phaser";
 
-    let game;
-    const container = document.getElementById('pong-game');
-    const startBtn = document.getElementById('start-btn');
-    const overlay = document.getElementById('start-overlay');
+    let game: Phaser.Game | null;
+    const container = document.getElementById("pong-game")!;
+    const startBtn = document.getElementById("start-btn")!;
+    const overlay = document.getElementById("start-overlay")!;
 
     class PongScene extends Phaser.Scene {
+        paddleLeft!: Phaser.GameObjects.Rectangle;
+        paddleRight!: Phaser.GameObjects.Rectangle;
+        ball!: Phaser.GameObjects.Arc;
+        cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+        wKey!: Phaser.Input.Keyboard.Key;
+        sKey!: Phaser.Input.Keyboard.Key;
+        scoreLeft: number = 0;
+        scoreRight: number = 0;
+        scoreText!: Phaser.GameObjects.Text;
+
         constructor() {
-            super({ key: 'PongScene' });
+            super({ key: "PongScene" });
         }
 
         create() {
@@ -30,63 +50,99 @@
             // Left (Blue)
             this.paddleLeft = this.add.rectangle(30, 200, 20, 100, 0x3b82f6);
             this.physics.add.existing(this.paddleLeft, false); // false = dynamic body
-            this.paddleLeft.body.setImmovable(true);
-            this.paddleLeft.body.setSize(20, 100); // Explicitly set size
-            
+            (this.paddleLeft.body as Phaser.Physics.Arcade.Body).setImmovable(
+                true,
+            );
+            (this.paddleLeft.body as Phaser.Physics.Arcade.Body).setSize(
+                20,
+                100,
+            ); // Explicitly set size
+
             // Right (Red)
             this.paddleRight = this.add.rectangle(770, 200, 20, 100, 0xef4444);
             this.physics.add.existing(this.paddleRight, false);
-            this.paddleRight.body.setImmovable(true);
-            this.paddleRight.body.setSize(20, 100);
+            (this.paddleRight.body as Phaser.Physics.Arcade.Body).setImmovable(
+                true,
+            );
+            (this.paddleRight.body as Phaser.Physics.Arcade.Body).setSize(
+                20,
+                100,
+            );
 
             // Ball setup
             this.ball = this.add.circle(400, 200, 10, 0xffffff);
             this.physics.add.existing(this.ball, false);
             // DISABLE built-in world bounds to prevent "invisible wall" issues and double scoring
-            this.ball.body.setCollideWorldBounds(false); 
-            this.ball.body.setBounce(1, 1);
-            this.ball.body.setCircle(10); // Explicitly set circular body
+            (
+                this.ball.body as Phaser.Physics.Arcade.Body
+            ).setCollideWorldBounds(false);
+            (this.ball.body as Phaser.Physics.Arcade.Body).setBounce(1, 1);
+            (this.ball.body as Phaser.Physics.Arcade.Body).setCircle(10); // Explicitly set circular body
 
             // Initial velocity
             this.resetBall();
 
             // Input
-            this.cursors = this.input.keyboard.createCursorKeys();
-            this.wKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-            this.sKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+            this.cursors = this.input.keyboard!.createCursorKeys();
+            this.wKey = this.input.keyboard!.addKey(
+                Phaser.Input.Keyboard.KeyCodes.W,
+            );
+            this.sKey = this.input.keyboard!.addKey(
+                Phaser.Input.Keyboard.KeyCodes.S,
+            );
 
             // Collisions
             // Use a collider with a callback to ensure we catch interaction
-            this.physics.add.collider(this.ball, this.paddleLeft, this.hitPaddle, null, this);
-            this.physics.add.collider(this.ball, this.paddleRight, this.hitPaddle, null, this);
+            this.physics.add.collider(
+                this.ball,
+                this.paddleLeft,
+                this.hitPaddle,
+                undefined,
+                this,
+            );
+            this.physics.add.collider(
+                this.ball,
+                this.paddleRight,
+                this.hitPaddle,
+                undefined,
+                this,
+            );
 
             // Score
             this.scoreLeft = 0;
             this.scoreRight = 0;
-            this.scoreText = this.add.text(400, 20, '0 - 0', { fontSize: '32px', fill: '#fff' }).setOrigin(0.5);
+            this.scoreText = this.add
+                .text(400, 20, "0 - 0", { fontSize: "32px", color: "#fff" })
+                .setOrigin(0.5);
         }
 
-        hitPaddle(ball, paddle) {
-            // Optional: Add a little spin or speed modifiction here if desired
-            // The default collider separation handles the bounce direction.
-            // We just ensure velocity is reinforced.
-            
-            // Simple logic: increase speed slightly on hit to make game interesting
-            const currentVel = ball.body.velocity;
-            ball.body.setVelocity(currentVel.x * 1.05, currentVel.y * 1.05);
+        hitPaddle(ballObj: any, paddleObj: any) {
+            // The collider callback passes the GameObjects, not the bodies.
+            const ball = ballObj as Phaser.GameObjects.Arc;
+            const body = ball.body as Phaser.Physics.Arcade.Body;
+
+            if (body) {
+                const currentVel = body.velocity;
+                body.setVelocity(currentVel.x * 1.05, currentVel.y * 1.05);
+            }
         }
 
         update() {
             // Player control (Left Paddle)
             // Priority: Mouse > Keyboard if mouse is moving
             const pointer = this.input.activePointer;
-            
-            if (pointer.isDown || (pointer.y !== 0 && pointer.y !== pointer.prevPosition.y)) {
-                 // Mouse control
-                 // We clamp the Y coordinate to keep it inside the board
-                 const clampedY = Phaser.Math.Clamp(pointer.y, 50, 350);
-                 this.paddleLeft.y = clampedY;
-                 this.paddleLeft.body.updateFromGameObject();
+
+            if (
+                pointer.isDown ||
+                (pointer.y !== 0 && pointer.y !== pointer.prevPosition.y)
+            ) {
+                // Mouse control
+                // We clamp the Y coordinate to keep it inside the board
+                const clampedY = Phaser.Math.Clamp(pointer.y, 50, 350);
+                this.paddleLeft.y = clampedY;
+                (
+                    this.paddleLeft.body as Phaser.Physics.Arcade.Body
+                ).updateFromGameObject();
             } else {
                 // Keyboard control fallback
                 if (this.wKey.isDown) {
@@ -95,8 +151,14 @@
                     this.paddleLeft.y += 7;
                 }
                 // Ensure paddle stays in bounds
-                this.paddleLeft.y = Phaser.Math.Clamp(this.paddleLeft.y, 50, 350);
-                this.paddleLeft.body.updateFromGameObject();
+                this.paddleLeft.y = Phaser.Math.Clamp(
+                    this.paddleLeft.y,
+                    50,
+                    350,
+                );
+                (
+                    this.paddleLeft.body as Phaser.Physics.Arcade.Body
+                ).updateFromGameObject();
             }
 
             // Simple AI (Right Paddle)
@@ -106,20 +168,31 @@
             } else if (this.ball.y > this.paddleRight.y + 10) {
                 this.paddleRight.y += aiSpeed;
             }
-            
+
             // Clamp AI paddle
             this.paddleRight.y = Phaser.Math.Clamp(this.paddleRight.y, 50, 350);
-            this.paddleRight.body.updateFromGameObject();
-
+            (
+                this.paddleRight.body as Phaser.Physics.Arcade.Body
+            ).updateFromGameObject();
 
             // MANUAL WORLD BOUNDS HANDLING for Ball
             // 1. Top/Bottom Bounces
             if (this.ball.y < 10) {
                 this.ball.setPosition(this.ball.x, 10);
-                this.ball.body.setVelocityY(Math.abs(this.ball.body.velocity.y));
+                (this.ball.body as Phaser.Physics.Arcade.Body).setVelocityY(
+                    Math.abs(
+                        (this.ball.body as Phaser.Physics.Arcade.Body).velocity
+                            .y,
+                    ),
+                );
             } else if (this.ball.y > 390) {
                 this.ball.setPosition(this.ball.x, 390);
-                this.ball.body.setVelocityY(-Math.abs(this.ball.body.velocity.y));
+                (this.ball.body as Phaser.Physics.Arcade.Body).setVelocityY(
+                    -Math.abs(
+                        (this.ball.body as Phaser.Physics.Arcade.Body).velocity
+                            .y,
+                    ),
+                );
             }
 
             // 2. Scoring (Left/Right Escape)
@@ -141,7 +214,10 @@
             const dirX = Math.random() > 0.5 ? 1 : -1;
             const dirY = Math.random() > 0.5 ? 1 : -1;
             // Ensure minimum X velocity to avoid boring vertical bounces
-            this.ball.body.setVelocity(300 * dirX, 200 * dirY);
+            (this.ball.body as Phaser.Physics.Arcade.Body).setVelocity(
+                300 * dirX,
+                200 * dirY,
+            );
         }
 
         updateScore() {
@@ -156,32 +232,32 @@
             type: Phaser.AUTO,
             width: 800,
             height: 400,
-            parent: 'pong-game',
+            parent: "pong-game",
             physics: {
-                default: 'arcade',
+                default: "arcade",
                 arcade: {
-                    gravity: { y: 0 },
-                    debug: false
-                }
+                    gravity: { x: 0, y: 0 },
+                    debug: false,
+                },
             },
             scene: PongScene,
             scale: {
                 mode: Phaser.Scale.FIT,
-                autoCenter: Phaser.Scale.CENTER_BOTH
+                autoCenter: Phaser.Scale.CENTER_BOTH,
             },
-            transparent: true
+            transparent: true,
         };
 
         game = new Phaser.Game(config);
     }
 
-    startBtn.addEventListener('click', () => {
-        overlay.classList.add('hidden');
+    startBtn.addEventListener("click", () => {
+        overlay.classList.add("hidden");
         initGame();
     });
 
     // Cleanup
-    document.addEventListener('astro:before-swap', () => {
+    document.addEventListener("astro:before-swap", () => {
         if (game) {
             game.destroy(true);
             game = null;

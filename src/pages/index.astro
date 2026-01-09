@@ -144,12 +144,22 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
 
     <script>
         // Space & Firework Engine
-        const canvas = document.getElementById("space-canvas");
-        const ctx = canvas.getContext("2d");
+        const canvas = document.getElementById(
+            "space-canvas",
+        ) as HTMLCanvasElement;
+        const ctx = canvas.getContext("2d")!;
+
+        interface Star {
+            x: number;
+            y: number;
+            size: number;
+            opacity: number;
+            speed: number;
+        }
 
         let width: number, height: number;
-        let particles = [];
-        let stars = [];
+        let particles: Particle[] = [];
+        let stars: Star[] = [];
 
         // Resize handling
         function resize() {
@@ -191,7 +201,17 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
 
         // Firework Particle System
         class Particle {
-            constructor(x, y) {
+            x: number;
+            y: number;
+            vx: number;
+            vy: number;
+            life: number;
+            decay: number;
+            color: string;
+            bounces: number;
+            gravity: number;
+
+            constructor(x: number, y: number) {
                 this.x = x;
                 this.y = y;
                 const angle = Math.random() * Math.PI * 2;
@@ -244,7 +264,7 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
             }
         }
 
-        function createFirework(x, y) {
+        function createFirework(x: number, y: number) {
             const particleCount = 30 + Math.random() * 20; // Random sequence amount
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle(x, y));
@@ -306,7 +326,7 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
             if (!document.fullscreenElement) {
                 try {
                     await gameContainer?.requestFullscreen();
-                } catch (err) {
+                } catch (err: any) {
                     console.error(
                         `Error attempting to enable fullscreen mode: ${err.message} (${err.name})`,
                     );
@@ -334,7 +354,7 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
         const toast = document.getElementById("minimized-toast");
         let isMinimized = false;
 
-        function toggleMinimize(shouldMinimize) {
+        function toggleMinimize(shouldMinimize: boolean) {
             isMinimized = shouldMinimize;
             if (isMinimized) {
                 // Fix: Exit fullscreen if active to prevent UI bugs
@@ -363,12 +383,12 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
             breakout: document.getElementById("game-slot-breakout"),
         };
 
-        gameSelector?.addEventListener("change", (e) => {
-            const selected = e.target.value;
+        gameSelector?.addEventListener("change", (e: Event) => {
+            const selected = (e.target as HTMLSelectElement).value;
             // Hide all
             Object.values(slots).forEach((el) => el?.classList.add("hidden"));
             // Show selected
-            slots[selected]?.classList.remove("hidden");
+            slots[selected as keyof typeof slots]?.classList.remove("hidden");
         });
     </script>
 </Layout>

@@ -1,25 +1,45 @@
 ---
+
 ---
 
-<div id="block-breaker-game" class="w-full flex-1 min-h-[400px] bg-black rounded-lg overflow-hidden border border-gray-700 shadow-2xl relative">
-    <div id="bb-start-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-        <button id="bb-start-btn" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-colors">
+<div
+    id="block-breaker-game"
+    class="w-full flex-1 min-h-[400px] bg-black rounded-lg overflow-hidden border border-gray-700 shadow-2xl relative"
+>
+    <div
+        id="bb-start-overlay"
+        class="absolute inset-0 flex items-center justify-center bg-black/80 z-10"
+    >
+        <button
+            id="bb-start-btn"
+            class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-colors"
+        >
             Start Block Breaker
         </button>
     </div>
 </div>
 
 <script>
-    import Phaser from 'phaser';
+    import Phaser from "phaser";
 
-    let game;
-    const container = document.getElementById('block-breaker-game');
-    const startBtn = document.getElementById('bb-start-btn');
-    const overlay = document.getElementById('bb-start-overlay');
+    let game: Phaser.Game | null;
+    const container = document.getElementById("block-breaker-game")!;
+    const startBtn = document.getElementById("bb-start-btn");
+    const overlay = document.getElementById("bb-start-overlay")!;
 
     class BreakoutScene extends Phaser.Scene {
+        paddle!: Phaser.GameObjects.Rectangle;
+        ball!: Phaser.GameObjects.Arc;
+        bricks!: Phaser.Physics.Arcade.StaticGroup;
+        scoreText!: Phaser.GameObjects.Text;
+        livesText!: Phaser.GameObjects.Text;
+        statusText!: Phaser.GameObjects.Text;
+        gameStarted: boolean = false;
+        score: number = 0;
+        lives: number = 3;
+
         constructor() {
-            super({ key: 'BreakoutScene' });
+            super({ key: "BreakoutScene" });
         }
 
         create() {
@@ -28,15 +48,19 @@
             // Paddle
             this.paddle = this.add.rectangle(400, 370, 100, 20, 0x00ffff);
             this.physics.add.existing(this.paddle);
-            this.paddle.body.setImmovable(true);
-            this.paddle.body.setCollideWorldBounds(true);
+            (this.paddle.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+            (
+                this.paddle.body as Phaser.Physics.Arcade.Body
+            ).setCollideWorldBounds(true);
 
             // Ball
             this.ball = this.add.circle(400, 350, 8, 0xffffff);
             this.physics.add.existing(this.ball);
-            this.ball.body.setCollideWorldBounds(true);
-            this.ball.body.setBounce(1);
-            
+            (
+                this.ball.body as Phaser.Physics.Arcade.Body
+            ).setCollideWorldBounds(true);
+            (this.ball.body as Phaser.Physics.Arcade.Body).setBounce(1);
+
             // Disable collision on the bottom edge so the ball can fall through
             this.physics.world.checkCollision.down = false;
 
@@ -50,47 +74,73 @@
             this.lives = 3;
 
             // UI
-            this.scoreText = this.add.text(20, 20, 'Score: 0', { fontSize: '20px', fill: '#fff' });
-            this.livesText = this.add.text(700, 20, 'Lives: 3', { fontSize: '20px', fill: '#fff' });
-            this.statusText = this.add.text(400, 200, '', { fontSize: '40px', fill: '#fff' }).setOrigin(0.5);
+            this.scoreText = this.add.text(20, 20, "Score: 0", {
+                fontSize: "20px",
+                color: "#fff",
+            });
+            this.livesText = this.add.text(700, 20, "Lives: 3", {
+                fontSize: "20px",
+                color: "#fff",
+            });
+            this.statusText = this.add
+                .text(400, 200, "", { fontSize: "40px", color: "#fff" })
+                .setOrigin(0.5);
 
             // Collisions
-            this.physics.add.collider(this.ball, this.paddle, this.hitPaddle, null, this);
-            this.physics.add.collider(this.ball, this.bricks, this.hitBrick, null, this);
-            
+            this.physics.add.collider(
+                this.ball,
+                this.paddle,
+                this.hitPaddle,
+                undefined,
+                this,
+            );
+            this.physics.add.collider(
+                this.ball,
+                this.bricks,
+                this.hitBrick,
+                undefined,
+                this,
+            );
+
             // Input
-            this.input.on('pointermove', (pointer) => {
+            this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
                 this.paddle.x = Phaser.Math.Clamp(pointer.x, 50, 750);
             });
 
-            this.input.on('pointerdown', () => {
+            this.input.on("pointerdown", () => {
                 if (!this.gameStarted && this.lives > 0) {
                     this.gameStarted = true;
-                    this.ball.body.setVelocity(Phaser.Math.Between(-200, 200), -300);
-                    this.statusText.setText('');
+                    (this.ball.body as Phaser.Physics.Arcade.Body).setVelocity(
+                        Phaser.Math.Between(-200, 200),
+                        -300,
+                    );
+                    this.statusText.setText("");
                 } else if (this.lives <= 0 || this.bricks.countActive() === 0) {
                     this.resetGame();
                 }
             });
 
             // Handle window resize for fullscreen
-            this.scale.on('resize', this.resize, this);
+            this.scale.on("resize", this.resize, this);
         }
 
         resetGame() {
             this.score = 0;
             this.lives = 3;
-            this.scoreText.setText('Score: 0');
-            this.livesText.setText('Lives: 3');
-            this.statusText.setText('');
+            this.scoreText.setText("Score: 0");
+            this.livesText.setText("Lives: 3");
+            this.statusText.setText("");
             this.scene.restart();
         }
 
         update() {
             if (!this.gameStarted) {
-                 // Stick ball to paddle
-                 this.ball.setPosition(this.paddle.x, 350);
-                 this.ball.body.setVelocity(0, 0);
+                // Stick ball to paddle
+                this.ball.setPosition(this.paddle.x, 350);
+                (this.ball.body as Phaser.Physics.Arcade.Body).setVelocity(
+                    0,
+                    0,
+                );
             }
 
             // Check for ball out of bounds (bottom)
@@ -100,8 +150,13 @@
             }
         }
 
-        resize(gameSize) {
-           this.cameras.main.setViewport(0, 0, gameSize.width, gameSize.height);
+        resize(gameSize: Phaser.Structs.Size) {
+            this.cameras.main.setViewport(
+                0,
+                0,
+                gameSize.width,
+                gameSize.height,
+            );
         }
 
         createBricks() {
@@ -117,39 +172,48 @@
             }
         }
 
-        hitPaddle(ball, paddle) {
+        hitPaddle(ballObj: any, paddleObj: any) {
+            const ball = ballObj as Phaser.GameObjects.Arc;
+            const paddle = paddleObj as Phaser.GameObjects.Rectangle;
+            const body = ball.body as Phaser.Physics.Arcade.Body;
+
             let diff = 0;
+            // We can use the GameObject's x/y for position comparison
             if (ball.x < paddle.x) {
                 diff = paddle.x - ball.x;
-                ball.body.setVelocityX(-10 * diff);
+                body.setVelocityX(-10 * diff);
             } else if (ball.x > paddle.x) {
                 diff = ball.x - paddle.x;
-                ball.body.setVelocityX(10 * diff);
+                body.setVelocityX(10 * diff);
             } else {
-                ball.body.setVelocityX(2 + Math.random() * 8);
+                body.setVelocityX(2 + Math.random() * 8);
             }
         }
 
-        hitBrick(ball, brick) {
-            brick.destroy();
+        hitBrick(ball: any, brick: any) {
+            const br = brick as Phaser.GameObjects.GameObject;
+            br.destroy();
             this.score += 10;
-            this.scoreText.setText('Score: ' + this.score);
+            this.scoreText.setText("Score: " + this.score);
 
             if (this.bricks.countActive() === 0) {
                 this.physics.pause();
-                this.ball.setVelocity(0, 0);
-                this.statusText.setText('YOU WIN!\nClick to Play Again');
+                (this.ball.body as Phaser.Physics.Arcade.Body).setVelocity(
+                    0,
+                    0,
+                );
+                this.statusText.setText("YOU WIN!\nClick to Play Again");
                 this.gameStarted = false;
             }
         }
 
         handleLifeLost() {
             this.lives--;
-            this.livesText.setText('Lives: ' + this.lives);
+            this.livesText.setText("Lives: " + this.lives);
             this.gameStarted = false;
-            
+
             if (this.lives <= 0) {
-                this.statusText.setText('GAME OVER\nClick to Restart');
+                this.statusText.setText("GAME OVER\nClick to Restart");
             } else {
                 // Ball position logic handled by update() when gameStarted is false
             }
@@ -163,44 +227,44 @@
             type: Phaser.AUTO,
             width: 800,
             height: 400,
-            parent: 'block-breaker-game',
+            parent: "block-breaker-game",
             physics: {
-                default: 'arcade',
+                default: "arcade",
                 arcade: {
-                    gravity: { y: 0 },
-                    debug: false
-                }
+                    gravity: { x: 0, y: 0 },
+                    debug: false,
+                },
             },
             scene: BreakoutScene,
             scale: {
                 mode: Phaser.Scale.FIT,
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 width: 800,
-                height: 400
+                height: 400,
             },
-            transparent: true
+            transparent: true,
         };
 
         game = new Phaser.Game(config);
-        
+
         // Listen for standard resize events to trigger refresh
-        window.addEventListener('resize', () => {
-             if(game) {
+        window.addEventListener("resize", () => {
+            if (game) {
                 // Small delay to allow CSS transitions to finish
                 setTimeout(() => {
-                    game.scale.refresh();
+                    game?.scale.refresh();
                 }, 100);
-             }
+            }
         });
     }
 
-    startBtn?.addEventListener('click', () => {
-        overlay.classList.add('hidden');
+    startBtn?.addEventListener("click", () => {
+        overlay.classList.add("hidden");
         initGame();
     });
 
     // Cleanup
-    document.addEventListener('astro:before-swap', () => {
+    document.addEventListener("astro:before-swap", () => {
         if (game) {
             game.destroy(true);
             game = null;
@@ -208,11 +272,11 @@
     });
 
     // External Trigger to Destroy/Pause (for switching)
-    container.addEventListener('destroy-game', () => {
+    container.addEventListener("destroy-game", () => {
         if (game) {
             game.destroy(true);
             game = null;
-            overlay.classList.remove('hidden');
+            overlay.classList.remove("hidden");
         }
     });
 </script>
