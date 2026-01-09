@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Pong from "../components/games/Pong.astro";
 import BlockBreaker from "../components/games/BlockBreaker.astro";
+import Racing3D from "../components/games/Racing3D.astro";
 ---
 
 <Layout title="Goobface // Space">
@@ -105,6 +106,9 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
                                         <option value="breakout"
                                             >BLOCK_BREAKER.CART</option
                                         >
+                                        <option value="racing"
+                                            >NEON_DRIFT_3D.EXE</option
+                                        >
                                     </select>
                                 </div>
                             </div>
@@ -121,6 +125,12 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
                                 class="game-slot w-full flex-1 flex flex-col hidden"
                             >
                                 <BlockBreaker />
+                            </div>
+                            <div
+                                id="game-slot-racing"
+                                class="game-slot w-full flex-1 flex flex-col hidden"
+                            >
+                                <Racing3D />
                             </div>
                         </div>
                     </div>
@@ -381,6 +391,7 @@ import BlockBreaker from "../components/games/BlockBreaker.astro";
         const slots = {
             pong: document.getElementById("game-slot-pong"),
             breakout: document.getElementById("game-slot-breakout"),
+            racing: document.getElementById("game-slot-racing"),
         };
 
         gameSelector?.addEventListener("change", (e: Event) => {

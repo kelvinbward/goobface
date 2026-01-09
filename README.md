@@ -42,3 +42,10 @@ The game container simulates a desktop window with interactive "Traffic Light" c
 - **🟢 Fullscreen (+)**: Expands the game component to fill the entire screen using the Fullscreen API.
 - **🟡 Minimize (-)**: Hides the game window and displays a clickable toast notification to restore it.
 - **🔴 Close (×)**: Prompts the user to terminate the session (closes window or navigates to blank).
+
+### 🏎️ Racing3D Component (`src/components/games/Racing3D.astro`)
+A 3D arcade racing experience built with **Three.js** and **Cannon-es**.
+- **Physics**: Uses `RaycastVehicle` for realistic suspension, friction, and drive train simulation on an infinite `CANNON.Plane`.
+- **Rendering**: "Neon Void" aesthetic with dynamic lighting and an animated grid.
+- **Controls**: Standard WASD (Gas/Brake/Steer), Shift+S (Reverse), Space (Handbrake), and Mouse Orbit Camera.
+- **Responsive**: Auto-resizes to fit any container dimensions.
