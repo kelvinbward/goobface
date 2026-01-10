@@ -6,7 +6,8 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules
-    # No ports exposed locally - Nginx handles routing
+    ports:
+      - "4321:4321"
     command: npm run dev -- --host
     networks:
       - web_gateway
