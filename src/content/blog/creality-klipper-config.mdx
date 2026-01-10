@@ -1,0 +1,121 @@
+---
+title: "My Creality + Klipper Setup"
+---
+
+# Optimal Configuration
+
+After weeks of tuning, this is the stable configuration for my Creality v4.2.7 board running Klipper.
+
+## Key Features
+- **BLTouch** for auto-bed leveling
+- **Screws Tilt Adjust** for easy manual tramming
+- **Bed Mesh** with bicubic interpolation
+- **Custom Macros** for reliable start/end routines
+
+## The Build
+Prices listed are pre-tax what it cost at the time of purchase.
+
+### Build Details
+* **Base Printer:** [Ender-3 Pro](https://www.sainsmart.com/products/creality3d-ender-3-pro-3d-printer) - $184.99
+* **Enclosure:** [SainSmart 3D Printer Enclosure](https://www.amazon.com/SainSmart-Enclosure-Dust-Proof-Filament-Constant/dp/B089VLHJT6) - $0.00
+
+### Hardware Mods
+* **Direct Drive:** [Creality Direct Drive Extruder Kit](https://www.amazon.com/gp/product/B08J7N2LNL/) - $29.99
+* **CR Touch & Extruder:** [CR Touch Kit](https://www.amazon.com/gp/product/B09BVTQR6M) (Includes aluminum extruder, PTFE Teflon Tubing, Metal bed springs) - $51.15
+* **Glass Bed:** [Creality Glass Bed](https://www.amazon.com/gp/product/B0995LFC3W) (Includes clips, Capricorn Premium XS Bowden Tubing & Silicone mounts (Mounts not in use)) - $20.69
+* **Dual Z-Axis:** [Creality Dual Z-Axis Kit](https://www.amazon.com/gp/product/B09N8QQDSP/) - $28.98
+* **Silent Board:** [Creality 4.2.7 Silent Board](https://www.amazon.com/gp/product/B09NMJMPN1/) - $39.99
+* **X-Axis Linear Rail:** [Creality X-Axis Linear Rail Kit](https://www.amazon.com/dp/B0DFLYN66Z/) - $27.99
+* **BIGTREETECH SFS:** [BIGTREETECH SFS V2.0](https://www.amazon.com/gp/product/B0C77J36T3/) - $22.99
+* **Raspberry PI 2B (1GB):** - $69.99
+* **Wifi Adpater:** [Panda Wireless® PAU0F AXE3000 Tri Band (2.4/5 / 6 GHz) WiFi 6E](https://www.amazon.com/gp/product/B0D972VY9B/) - $40.99
+* **Y-Axis Linear Rail:** [Creativity Upgrade Y axis linear rail](https://www.amazon.com/dp/B0BN1Y53HS) - $45.99
+
+### Total Ragrets: $646.23
+
+## The Configuration
+
+This file lives in the `src/content/printing` directory and is rendered here using Shiki.
+
+```ini
+[stepper_x]
+step_pin: PB9
+dir_pin: PC2
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PA5
+position_endstop: 0
+position_max: 235
+homing_speed: 50
+
+[stepper_y]
+step_pin: PB7
+dir_pin: PB8
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PA6
+position_endstop: 0
+position_max: 235
+homing_speed: 50
+
+[stepper_z]
+step_pin: PB5
+dir_pin: !PB6
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 8
+endstop_pin: probe:z_virtual_endstop
+#position_endstop: 0.0 tuned by probe
+position_max: 250
+position_min: -1.3 # Useful when setting z-offset.
+
+[extruder]
+max_extrude_only_distance: 100.0
+step_pin: PB3
+dir_pin: PB4
+enable_pin: !PC3
+microsteps: 16
+rotation_distance: 32.136
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: PA1
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: PC5
+min_temp: 0
+max_temp: 250
+pressure_advance: 0
+
+[heater_bed]
+heater_pin: PA2
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: PC4
+min_temp: 0
+max_temp: 130
+
+[fan]
+pin: PA0
+
+[mcu]
+serial: /dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+restart_method: command
+
+[printer]
+kinematics: cartesian
+max_velocity: 300
+max_accel: 3000
+max_z_velocity: 5
+max_z_accel: 100
+
+[bltouch]
+sensor_pin: ^PB1
+control_pin: PB0
+x_offset: -43
+y_offset: -6
+#z_offset: 1.050 (Saved in auto-generated section below)
+```
+
+## Future Upgrades
+- Input Shaper (ADXL345)
+- Pressure Advance Tuning
