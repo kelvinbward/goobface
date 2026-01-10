@@ -18,10 +18,20 @@ npm run dev
 ```
 
 ## 🐳 Docker
-Run within the personal cloud cluster:
+## 🐳 Docker
+
+### Standalone Mode (Development)
+Run isolated with exposed ports (4321):
+```bash
+docker-compose -f docker-compose.standalone.yml up
+```
+
+### Private Cloud Mode (Cluster)
+Run within the shared infrastructure network (no exposed ports):
 ```bash
 docker-compose up -d
 ```
+*Access via Gateway: `http://goobface.localhost`*
 
 ## 📝 Code Overview
 
