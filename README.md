@@ -1,6 +1,5 @@
 # 🎮 Goobface
 
-A technical showcase and hobby portal built with **Astro**, **Phaser**, and **Three.js**.
 A digital playground for game development, 3D printing logs, and generative art.
 **Deployed independently at [goobface.com](https://goobface.com)**.
 
@@ -22,12 +21,11 @@ This project uses a hybrid architecture to balance performance with interactivit
 - **Content Collections**: Astro's type-safe content layer transforms raw `.md` and `.cfg` files into queryable data, treating my 3D printer configs as "database entries" for the blog.
 
 ## 🛠 Development
-```bash
+\`\`\`bash
 npm install
 npm run dev
-```
+\`\`\`
 
-## 🐳 Docker
 ## 🐳 Docker
 
 ### Standalone Mode (Development)
