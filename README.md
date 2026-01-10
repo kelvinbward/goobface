@@ -7,9 +7,17 @@ A technical showcase and hobby portal built with **Astro**, **Phaser**, and **Th
 - **Phaser.js**: 2D arcade games.
 - **Three.js**: 3D scene rendering.
 - **Zero-JS Static Core**: Super fast blog and landing pages.
+- **Content Collections**: Integrated 3D Printing configuration documentation and Personal Blog.
 
 ## 🤖 AI Agent Protocol
 - **`AGENTS.md`**: See this file for architectural context and dev commands.
+
+## 💡 Technology Selection & Benefits
+This project uses a hybrid architecture to balance performance with interactivity:
+- **Astro**: Chosen for its **Islands Architecture**, allowing the site to remain 90% static HTML (fast, SEO-friendly) while selectively hydrating heavy interactive components only when visible.
+- **Phaser.js**: Selected for the 2D arcade games (`Pong`, `BlockBreaker`) due to its robust physics engine and optimized canvas rendering, ensuring smooth 60fps gameplay on low-power devices.
+- **Three.js**: Powers the 3D experiences (`Racing3D`) and the background starfield, providing WebGL-accelerated graphics without the overhead of a full game engine like Unity.
+- **Content Collections**: Astro's type-safe content layer transforms raw `.md` and `.cfg` files into queryable data, treating my 3D printer configs as "database entries" for the blog.
 
 ## 🛠 Development
 ```bash
@@ -59,3 +67,9 @@ A 3D arcade racing experience built with **Three.js** and **Cannon-es**.
 - **Rendering**: "Neon Void" aesthetic with dynamic lighting and an animated grid.
 - **Controls**: Standard WASD (Gas/Brake/Steer), Shift+S (Reverse), Space (Handbrake), and Mouse Orbit Camera.
 - **Responsive**: Auto-resizes to fit any container dimensions.
+
+### 🖨️ Content Collections (`src/content/`)
+The project now hosts personal documentation and blogs using Astro's Content Collections:
+- **`blog/`**: General musings and project updates (MDX).
+- **`printing/`**: 3D printer configurations (`.cfg`) and documentation (`.md`).
+  - Utilizes **Shiki** for syntax highlighting of configuration files.

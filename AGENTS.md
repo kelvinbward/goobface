@@ -1,7 +1,7 @@
 # 🧠 Project: Goobface (Public)
 
 ## 📋 Role
-Hybrid Game & Hobby Node. Serves high-performance JS games (Phaser/Three.js) via Astro.
+Hybrid Game & Hobby Node. Serves high-performance JS games (Phaser/Three.js) and hosts personal blog/3D printing documentation via Astro Content Collections.
 
 ## 🌳 Relationship: System Root
 This project is a **Leaf Node** in the `kelvinbward` Polyrepo system.
