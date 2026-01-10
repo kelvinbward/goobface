@@ -1,6 +1,8 @@
 # 🎮 Goobface
 
 A technical showcase and hobby portal built with **Astro**, **Phaser**, and **Three.js**.
+A digital playground for game development, 3D printing logs, and generative art.
+**Deployed independently at [goobface.com](https://goobface.com)**.
 
 ## 🚀 Features
 - **Islands Architecture**: Interactive game components powered by Astro.

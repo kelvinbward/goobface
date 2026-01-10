@@ -1,0 +1,64 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) =>
+        (b.data.pubDate?.valueOf() || 0) - (a.data.pubDate?.valueOf() || 0),
+);
+---
+
+<Layout title="Goobface Blog">
+    <main>
+        <section>
+            <h1>Blog</h1>
+            <ul>
+                {
+                    posts.map((post) => (
+                        <li>
+                            <a href={`/blog/${post.slug}/`}>
+                                <h2 class="title">{post.data.title}</h2>
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    main {
+        width: 960px;
+        margin: auto;
+        padding: 3rem;
+        color: white;
+    }
+    ul {
+        list-style-type: none;
+        padding: unset;
+    }
+    ul li {
+        display: flex;
+        margin-bottom: 2rem;
+    }
+    ul li :global(time) {
+        flex: 0 0 130px;
+        font-style: italic;
+        color: #595959;
+    }
+    ul li a:visited {
+        color: #8e32dc;
+    }
+    .title {
+        margin: 0;
+        color: rgb(var(--accent));
+        text-decoration: none;
+    }
+    a {
+        text-decoration: none;
+    }
+    a:hover .title {
+        color: rgb(var(--accent-light));
+    }
+</style>
