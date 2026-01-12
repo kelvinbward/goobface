@@ -1,6 +1,7 @@
 services:
   goobface:
-    image: node:18-alpine
+    build: .
+    image: goobface-app
     container_name: goobface-app-1
     working_dir: /app
     volumes:
