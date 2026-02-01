@@ -43,10 +43,11 @@ This project is a **Leaf Node** in the `kelvinbward` Polyrepo system.
     *   Wait for `Agent Gatekeeper` checks to pass.
     *   Merge (Squash/Rebase).
 3.  **Agent Cleanup (Start of Next Task)**:
-    *   **MANDATORY**: Before starting ANY new task:
-        *   `git checkout main`
-        *   `git pull origin main`
-        *   `git branch -d feature/previous-task` (Clean up local workspace)
+    *   **MANDATORY**: Before starting ANY new task, run the cleanup script from the workspace root:
+        ```bash
+        ../kelvinbward/scripts/git_cleanup.sh
+        ```
+    *   This ensures your workspace is synchronized with the latest `main`.
 
 
 
