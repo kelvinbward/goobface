@@ -20,7 +20,7 @@
 
 ## 🔄 Handoff Protocol
 1.  **Immutability**: `public/3d-printing` is LOCKED. Update via PR from `3d-printing` repo.
-2.  **Content**: Game logic resides here (`src/components/games`).
+2.  **Workflow**: Push to `feature/` branch. Create PR to `main`.
 
 ## 🤝 Collaborative Workflow
 - **Branching**: `feature/` (Games/Content), `infra/` (Config).
