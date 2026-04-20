@@ -3,83 +3,92 @@ import Pong from "./Pong.astro";
 import BlockBreaker from "./BlockBreaker.astro";
 import Racing3D from "./Racing3D.astro";
 ---
-        <!-- Game Island -->
-        <div id="games" class="pointer-events-auto max-w-4xl mx-auto w-full">
-            <div
-                class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl shadow-cyan-900/20"
-            >
-                <div
-                    id="game-container"
-                    class="bg-[#0a0a0a] rounded-[22px] overflow-hidden relative group flex flex-col min-h-[460px]"
-                >
-                    <!-- Header -->
-                    <div
-                        class="p-4 border-b border-white/5 flex items-center justify-between bg-white/5"
-                    >
-                        <div class="flex gap-2 items-center">
-                            <button
-                                id="close-btn"
-                                class="w-3 h-3 rounded-full bg-red-500/50 hover:bg-red-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
-                                title="Close"
-                            >
-                                &times;
-                            </button>
-                            <button
-                                id="minimize-btn"
-                                class="w-3 h-3 rounded-full bg-yellow-500/50 hover:bg-yellow-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
-                                title="Minimize"
-                            >
-                                -
-                            </button>
-                            <button
-                                id="fullscreen-btn"
-                                class="w-3 h-3 rounded-full bg-green-500/50 hover:bg-green-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
-                                title="Fullscreen"
-                            >
-                                +
-                            </button>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <select
-                                id="game-selector"
-                                class="bg-black/20 border border-white/10 rounded px-2 py-1 text-[10px] text-white/60 font-mono focus:outline-none focus:border-cyan-500 hover:bg-white/5 cursor-pointer transition-colors"
-                            >
-                                <option value="pong">PONG_V1.CART</option>
-                                <option value="breakout">BLOCK_BREAKER.CART</option>
-                                <option value="racing">NEON_DRIFT_3D.EXE</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <!-- Game Slots -->
-                    <div
-                        id="game-slot-pong"
-                        class="game-slot w-full flex-1 flex flex-col"
+<!-- Game Island -->
+<div id="games" class="pointer-events-auto max-w-4xl mx-auto w-full">
+    <div
+        class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-1 shadow-2xl shadow-cyan-900/20"
+    >
+        <div
+            id="game-container"
+            class="bg-[#0a0a0a] rounded-[22px] overflow-hidden relative group flex flex-col min-h-[460px]"
+        >
+            <!-- Header -->
+            <div
+                class="p-4 border-b border-white/5 flex items-center justify-between bg-white/5"
+            >
+                <div class="flex gap-2 items-center">
+                    <button
+                        id="close-btn"
+                        class="w-3 h-3 rounded-full bg-red-500/50 hover:bg-red-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
+                        title="Close"
                     >
-                        <Pong />
-                    </div>
-                    <div
-                        id="game-slot-breakout"
-                        class="game-slot w-full flex-1 flex flex-col hidden"
+                        &times;
+                    </button>
+                    <button
+                        id="minimize-btn"
+                        class="w-3 h-3 rounded-full bg-yellow-500/50 hover:bg-yellow-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
+                        title="Minimize"
                     >
-                        <BlockBreaker />
-                    </div>
-                    <div
-                        id="game-slot-racing"
-                        class="game-slot w-full flex-1 flex flex-col hidden"
+                        -
+                    </button>
+                    <button
+                        id="fullscreen-btn"
+                        class="w-3 h-3 rounded-full bg-green-500/50 hover:bg-green-400 flex items-center justify-center text-[8px] text-black font-bold transition-colors cursor-pointer"
+                        title="Fullscreen"
                     >
-                        <Racing3D />
-                    </div>
+                        +
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select
+                        id="game-selector"
+                        class="bg-black/20 border border-white/10 rounded px-2 py-1 text-[10px] text-white/60 font-mono focus:outline-none focus:border-cyan-500 hover:bg-white/5 cursor-pointer transition-colors"
+                    >
+                        <option value="pong" class="bg-gray-900 text-cyan-400"
+                            >PONG_V1.CART</option
+                        >
+                        <option
+                            value="breakout"
+                            class="bg-gray-900 text-cyan-400"
+                            >BLOCK_BREAKER.CART</option
+                        >
+                        <option value="racing" class="bg-gray-900 text-cyan-400"
+                            >NEON_DRIFT_3D.EXE</option
+                        >
+                    </select>
                 </div>
             </div>
-        </div>
 
-        <div
-            id="minimized-toast"
-            class="mx-auto mt-12 w-fit bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full text-sm font-mono text-cyan-400 pointer-events-auto cursor-pointer hover:bg-white/20 transition-all duration-300 opacity-0 z-50 shadow-lg shadow-cyan-500/20"
-        >
-            Game Minimized // Click Here to Restore
+            <!-- Game Slots -->
+            <div
+                id="game-slot-pong"
+                class="game-slot w-full flex-1 flex flex-col"
+            >
+                <Pong />
+            </div>
+            <div
+                id="game-slot-breakout"
+                class="game-slot w-full flex-1 flex flex-col hidden"
+            >
+                <BlockBreaker />
+            </div>
+            <div
+                id="game-slot-racing"
+                class="game-slot w-full flex-1 flex flex-col hidden"
+            >
+                <Racing3D />
+            </div>
         </div>
+    </div>
+</div>
+
+<div
+    id="minimized-toast"
+    class="mx-auto mt-12 w-fit bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full text-sm font-mono text-cyan-400 pointer-events-auto cursor-pointer hover:bg-white/20 transition-all duration-300 opacity-0 z-50 shadow-lg shadow-cyan-500/20"
+>
+    Game Minimized // Click Here to Restore
+</div>
 
 <script>
     // Fullscreen Toggle Logic
@@ -153,3 +162,13 @@ import Racing3D from "./Racing3D.astro";
         slots[selected as keyof typeof slots]?.classList.remove("hidden");
     });
 </script>
+<style is:global>
+    /* Targets any canvas injected into a game slot to force 
+      instant resizing without JS feedback loops 
+    */
+    .game-slot canvas {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain;
+    }
+</style>
