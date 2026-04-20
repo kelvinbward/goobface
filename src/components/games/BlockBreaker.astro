@@ -190,7 +190,7 @@
             }
         }
 
-        hitBrick(ball: any, brick: any) {
+        hitBrick(_ball: any, brick: any) {
             const br = brick as Phaser.GameObjects.GameObject;
             br.destroy();
             this.score += 10;
