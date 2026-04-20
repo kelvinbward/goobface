@@ -23,7 +23,7 @@
     import Phaser from "phaser";
 
     let game: Phaser.Game | null;
-    const container = document.getElementById("pong-game")!;
+    // container declaration not used in code directly here.
     const startBtn = document.getElementById("start-btn")!;
     const overlay = document.getElementById("start-overlay")!;
 
@@ -116,7 +116,7 @@
                 .setOrigin(0.5);
         }
 
-        hitPaddle(ballObj: any, paddleObj: any) {
+        hitPaddle(ballObj: any, _paddleObj: any) {
             // The collider callback passes the GameObjects, not the bodies.
             const ball = ballObj as Phaser.GameObjects.Arc;
             const body = ball.body as Phaser.Physics.Arcade.Body;
