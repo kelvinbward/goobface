@@ -17,6 +17,5 @@ jobs:
   deploy:
     uses: kelvinbward/.github/.github/workflows/standard-static-deploy.yml@main
     with:
-      node-version: '20'
       build-command: 'npm run build'
       output-path: './dist'
