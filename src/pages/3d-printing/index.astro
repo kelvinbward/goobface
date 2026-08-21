@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/ui/Navbar.astro";
+import SpaceBackground from "../../components/ui/SpaceBackground.astro";
+import LabApp from "../../apps/3d-lab/LabApp.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("printing");
+---
+
+<Layout title="3D Printing Lab // Goobface">
+    <div class="relative min-h-screen overflow-hidden bg-[#050510] text-white selection:bg-purple-500 selection:text-black">
+        <SpaceBackground />
+
+        <main class="relative z-10 pointer-events-none">
+            <Navbar />
+
+            <section class="max-w-6xl mx-auto px-6 pt-8 pb-24 pointer-events-auto">
+                <LabApp posts={posts} />
+            </section>
+
+            <footer class="text-center py-12 text-white/20 text-sm font-mono pointer-events-auto">
+                2026 // GOOBFACE LABS // 3D FABRICATION
+            </footer>
+        </main>
+    </div>
+</Layout>

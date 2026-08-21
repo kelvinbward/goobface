@@ -1,0 +1,28 @@
+---
+import AudioProcessor from '../../components/audio/AudioProcessor.astro';
+---
+
+<div class="w-full max-w-4xl mx-auto p-4 sm:p-6">
+    <div class="rounded-3xl bg-slate-950/80 border border-slate-800 shadow-2xl p-6 sm:p-8 backdrop-blur-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                    <span class="p-2 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800">🎛️</span>
+                    Creative Audio Lab
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">
+                    Interactive Web Audio synthesizer, DSP effect chains, and sound design playground powered by Tone.js.
+                </p>
+            </div>
+            <a 
+                href="/" 
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors w-fit"
+            >
+                ← Back to GOOBFACE
+            </a>
+        </div>
+
+        <!-- Audio Processor Island -->
+        <AudioProcessor />
+    </div>
+</div>

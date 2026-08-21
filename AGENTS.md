@@ -1,16 +1,16 @@
-# 🧠 Service: Personal Hub (goobface)
+# 🧠 Service: Personal Creative Monolith (goobface)
 
 ## 📋 Service Role
-**Personal Creative Root**.
+**Personal Creative Monolith**.
 - **Domain**: `goobface.com`
-- **Function**: Aggregator for creative spokes (`creativeAudioJS`, `3d-printing`).
-- **Stack**: Astro + Phaser + Three.js.
+- **Function**: Unified repository consolidating creative applications, experiments, games, audio tools (`creativeAudioJS`), and documentation (`3d-printing`).
+- **Stack**: Astro + Phaser + Three.js + Tone.js.
 
 ## 📡 Service Topology
 | Context | Hostname | Port | Visibility |
 | :--- | :--- | :--- | :--- |
 | **Gateway** | `gateway-app-1` | `81` | Public |
-| **CreativeAudio** | `creative-audio-1` | `5173` | Subdomain |
+| **Monolith App** | `goobface-app-1` | `4321` | Main Site & Labs |
 
 ## 🚀 Execution Modes
 | Mode | Config | Command | Description |
@@ -19,8 +19,9 @@
 | **Standalone** | `docker-compose.standalone.yml` | `docker compose -f ... up` | **Port 4321**. Isolated dev. |
 
 ## 🔄 Handoff Protocol
-1.  **Immutability**: `public/3d-printing` is LOCKED. Update via PR from `3d-printing` repo.
-2.  **Workflow**: Push to `feature/` branch. Create PR to `main`.
+1.  **Monorepo Consolidation**: All integrated applications and public distribution paths are directly editable within this repository.
+2.  **Workflow**: Push to `feature/` or `infra/` branch. Create PR to `main`.
 
 ## 🤝 Collaborative Workflow
-- **Branching**: `feature/` (Games/Content), `infra/` (Config).
+- **Branching**: `feature/` (Games/Content/Apps), `infra/` (Config/Infrastructure).
+

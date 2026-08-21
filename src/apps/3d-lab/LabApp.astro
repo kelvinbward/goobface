@@ -1,0 +1,115 @@
+---
+interface Props {
+  posts: Array<{
+    id: string;
+    slug?: string;
+    body?: string;
+    collection: string;
+    data: {
+      title: string;
+      description?: string;
+      date?: Date;
+      pubDate?: Date;
+      tags?: string[];
+    };
+  }>;
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="w-full max-w-5xl mx-auto p-4 sm:p-6">
+    <div class="rounded-3xl bg-slate-950/80 border border-slate-800 shadow-2xl p-6 sm:p-8 backdrop-blur-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                    <span class="p-2 rounded-xl bg-purple-950 text-purple-400 border border-purple-800">🖨️</span>
+                    3D Printing Lab & Hardware Docs
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">
+                    Fabrication logs, Ender-3 Pro manifests, Klipper printer configurations, and hardware roadmaps.
+                </p>
+            </div>
+            <a 
+                href="/" 
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors w-fit"
+            >
+                ← Back to GOOBFACE
+            </a>
+        </div>
+
+        <!-- Hardware Status Widget -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+                <div class="text-xs font-mono text-slate-400">FABRICATION UNIT</div>
+                <div class="text-lg font-bold text-cyan-400 mt-1">Ender-3 Pro (Direct Drive)</div>
+                <div class="text-xs text-slate-500 mt-1">Silent 4.2.7 + CR Touch + Linear Rails</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800">
+                <div class="text-xs font-mono text-slate-400">FIRMWARE & HOST</div>
+                <div class="text-lg font-bold text-purple-400 mt-1">Klipper / Mainsail</div>
+                <div class="text-xs text-slate-500 mt-1">Raspberry Pi Host + BTT SFS V2.0</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between">
+                        <div class="text-xs font-mono text-slate-400">HARDWARE CONFIGS</div>
+                        <a href="/3d-printing/configs" class="text-xs text-emerald-400 hover:underline font-mono">Store →</a>
+                    </div>
+                    <a href="/3d-printing/configs" class="text-lg font-bold text-emerald-400 mt-1 block hover:text-emerald-300 transition-colors">
+                        Klipper Config Store
+                    </a>
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap mt-2">
+                    <a href="/3d-printing/configs/printer.cfg" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 hover:bg-emerald-800 hover:text-white transition-colors">
+                        printer.cfg
+                    </a>
+                    <a href="/3d-printing/configs/mainsail.conf" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 hover:bg-emerald-800 hover:text-white transition-colors">
+                        mainsail.conf
+                    </a>
+                    <a href="/3d-printing/configs/moonraker.conf" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 hover:bg-emerald-800 hover:text-white transition-colors">
+                        moonraker.conf
+                    </a>
+                    <a href="/3d-printing/configs/timelapse.cfg" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 hover:bg-emerald-800 hover:text-white transition-colors">
+                        timelapse.cfg
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Content Posts Grid -->
+        <h2 class="text-xl font-bold text-slate-200 mb-4 flex items-center gap-2">
+            <span>📚</span> Documentation & Log Entries
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {posts.map((post) => (
+                <a 
+                    href={`/3d-printing/${post.id}`} 
+                    class="group p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 transition-all duration-300 flex flex-col justify-between"
+                >
+                    <div>
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            {post.data.tags?.map((tag) => (
+                                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-purple-950/80 text-purple-300 border border-purple-800">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">
+                            {post.data.title}
+                        </h3>
+                        <p class="text-sm text-slate-400 mt-2 line-clamp-2">
+                            {post.data.description}
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-mono">
+                        <span>{post.data.date ? new Date(post.data.date).toLocaleDateString() : 'LOGGED'}</span>
+                        <span class="text-purple-400 group-hover:translate-x-1 transition-transform">Read Log →</span>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</div>

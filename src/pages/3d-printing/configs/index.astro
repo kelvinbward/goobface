@@ -1,0 +1,98 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/ui/Navbar.astro";
+import SpaceBackground from "../../../components/ui/SpaceBackground.astro";
+
+const configModules = import.meta.glob<string>('/src/content/printer_data/*', { query: '?raw', import: 'default', eager: true });
+
+const configs = Object.entries(configModules).map(([path, content]) => {
+    const filename = path.split('/').pop() || '';
+    return {
+        id: filename,
+        body: content,
+    };
+});
+
+const configDescriptions: Record<string, string> = {
+    "printer.cfg": "Primary Klipper hardware definition: stepper pinouts, CR-Touch bed mesh, linear rails, thermistors, and kinematics.",
+    "mainsail.conf": "Mainsail Web UI macros, custom dashboard settings, and printer control overrides.",
+    "moonraker.conf": "Moonraker API daemon settings, CORS allowed origins, update manager, and socket communication.",
+    "crowsnest.conf": "Crowsnest camera service streamer config for high-framerate MJPEG / WebRTC video feeds.",
+    "sonar.conf": "Sonar network monitoring and Wi-Fi keep-alive service definition.",
+    "timelapse.cfg": "G-code layer snapshot macros for automated 3D print timelapse recording.",
+};
+---
+
+<Layout title="Klipper Config Store // Goobface 3D">
+    <div class="relative min-h-screen overflow-hidden bg-[#050510] text-white selection:bg-emerald-500 selection:text-black">
+        <SpaceBackground />
+
+        <main class="relative z-10 pointer-events-none">
+            <Navbar />
+
+            <section class="max-w-5xl mx-auto px-6 pt-8 pb-24 pointer-events-auto">
+                <div class="p-6 sm:p-10 rounded-3xl bg-slate-950/90 border border-slate-800 shadow-2xl backdrop-blur-xl">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
+                                    KLIPPER STORE
+                                </span>
+                            </div>
+                            <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                                <span>⚙️</span> Klipper Printer Configurations
+                            </h1>
+                            <p class="text-slate-400 text-sm mt-1">
+                                Version-controlled configuration files running on the Ender-3 Pro Klipper / Mainsail host.
+                            </p>
+                        </div>
+                        <a 
+                            href="/3d-printing" 
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition-colors w-fit"
+                        >
+                            ← Back to 3D Lab
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {configs.map((cfg) => {
+                            const desc = configDescriptions[cfg.id] || "Klipper printer configuration file.";
+                            const lineCount = cfg.body ? cfg.body.split('\n').length : 0;
+                            return (
+                                <a 
+                                    href={`/3d-printing/configs/${cfg.id}`}
+                                    class="group p-6 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900 transition-all duration-300 flex flex-col justify-between"
+                                >
+                                    <div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+                                                {cfg.id.endsWith('.cfg') ? 'KLIPPER CFG' : 'CONF'}
+                                            </span>
+                                            <span class="text-xs font-mono text-slate-500">
+                                                {lineCount} lines
+                                            </span>
+                                        </div>
+                                        <h2 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors font-mono">
+                                            {cfg.id}
+                                        </h2>
+                                        <p class="text-sm text-slate-400 mt-2">
+                                            {desc}
+                                        </p>
+                                    </div>
+                                    <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-mono">
+                                        <span>Click to inspect code</span>
+                                        <span class="text-emerald-400 group-hover:translate-x-1 transition-transform">View File →</span>
+                                    </div>
+                                </a>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            <footer class="text-center py-12 text-white/20 text-sm font-mono pointer-events-auto">
+                2026 // GOOBFACE LABS // KLIPPER CONFIG STORE
+            </footer>
+        </main>
+    </div>
+</Layout>

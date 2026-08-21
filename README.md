@@ -43,20 +43,29 @@ docker-compose up -d
 
 ## 🏗️ Project Structure
 
-The project follows a modular directory structure to separate concerns between layouts, pages, and interactive "Islands":
+The project follows a **Unified Astro Monolith** directory structure to organize integrated apps, interactive islands, libraries, and content collections:
 
 ```text
 src/
-├── components/
-│   ├── games/          # Interactive game components (Pong, Racing3D, etc.)
-│   │   └── GameIsland.astro  # Main windowing and orchestration logic
-│   └── ui/             # Reusable UI elements
-│       ├── Navbar.astro      # Global navigation
-│       └── SpaceBackground.astro # Interactive canvas starfield/fireworks
-├── content/            # type-safe blog and 3d-printing markdown
-├── layouts/            # Base HTML wrappers (Astro Layouts)
-├── pages/              # Route entry points (index.astro, blog/, etc.)
-└── scripts/            # Shared client-side helper scripts
+├── apps/                 # Integrated feature applications & experiment modules
+│   ├── arcade/           # Desktop OS, game cartridges (Pong, Racing3D)
+│   ├── audio-lab/        # Creative Audio JS playground & synthesizers
+│   └── 3d-lab/           # 3D printer specs & model previewer
+├── components/           # UI component hierarchy
+│   ├── ui/               # Shared UI elements (Navbar, Window controls, Canvas engines)
+│   ├── games/            # Game canvas components & controls
+│   ├── audio/            # Synth knobs, wave visualizers
+│   └── 3d-printing/      # 3D model & printer config renderers
+├── content/              # Type-safe blog and 3d-printing markdown (MDX)
+│   ├── blog/             # Project development logs
+│   └── printing/         # 3D printer configs and documentation
+├── lib/                  # Core domain engines & utility libraries
+│   ├── physics/          # Cannon-es physics wrappers
+│   ├── audio/            # Tone.js audio synth logic
+│   └── graphics/         # Three.js scene setup & shaders
+├── layouts/              # Base HTML wrappers (Astro Layouts)
+├── pages/                # Route entry points (index.astro, blog/, etc.)
+└── styles/               # Design system tokens & global CSS
 ```
 
 ## 📝 Code Overview
@@ -84,18 +93,13 @@ Type-safe documentation managed via Astro's content layer:
 
 ## 🤝 Contributing
 
-We follow a strict workflow to maintain stability across the Goobface ecosystem.
+We follow a unified monorepo workflow to maintain stability across all integrated projects and experiments.
 
 ### Workflow & Branching
 1. **Branching**:
-   - Use `feature/` for new games or content.
-   - Use `infra/` for configuration and infrastructure changes.
+   - Use `feature/` for new applications, games, audio tools, or content.
+   - Use `infra/` for build scripts, dependency updates, and monorepo structure changes.
 2. **Pull Requests**: Never commit directly to `main`. Always create a PR from your feature/infra branch for review.
-
-### Immutability Rules
-> [!IMPORTANT]
-> The directory `public/3d-printing` is **LOCKED**.
-> Do not modify files in this directory directly. These are synced from a separate repository. Updates must be initiated via a PR from the upstream `3d-printing` repo.
 
 ### Standards
 - **SSR Safety**: Since we use Astro, always ensure canvas-dependent libraries (Phaser, Three.js) are scoped to client-side scripts using `<script>` tags or `client:only` directives.
