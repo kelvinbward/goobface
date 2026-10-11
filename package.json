@@ -6,7 +6,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run --reporter=dot",
+    "test:watch": "vitest",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -22,5 +25,8 @@
     "three": "^0.182.0",
     "tone": "^15.1.22",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.3"
   }
 }
