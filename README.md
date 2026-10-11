@@ -37,32 +37,100 @@ This project balances extreme performance with rich interactivity through a hybr
 
 ---
 
+## 🧠 Architectural Mental Model
+
+The following diagram illustrates how the unified Astro monolith orchestrates static content, interactive client islands, domain engines, and the testing guardrails:
+
+```mermaid
+graph TD
+    Client["Browser / Client Session"]
+    
+    subgraph AstroMonolith["Astro Monolith (Static Core & Islands)"]
+        Layout["Base Layout (Layout.astro, Navbar, SpaceBackground)"]
+        
+        subgraph StaticPages["Static SSG Pages (Zero Client JS)"]
+            P_Home["/ (Home & Game Island)"]
+            P_Audio["/audio (Audio Lab)"]
+            P_Print["/3d-printing (Hardware & Manifests)"]
+            P_Blog["/blog (Dev Logs & Writeups)"]
+        end
+        
+        subgraph ClientIslands["Client-Side Hydrated Islands (<script>)"]
+            Island_Games["Game Engines (Phaser 2D, Three.js 3D, Cannon-es)"]
+            Island_Audio["Audio Synthesizer & Oscilloscope (Tone.js, Canvas)"]
+            Island_FX["Parallax Starfield & Fireworks Canvas"]
+        end
+        
+        subgraph ContentLayer["Astro Content Collections (astro:content)"]
+            C_Blog["src/content/blog/*.mdx"]
+            C_Print["src/content/printing/*.md"]
+            C_Klipper["src/content/printer_data/*.cfg"]
+        end
+        
+        subgraph DomainLib["Core Domain Libraries (src/lib)"]
+            Lib_Audio["AudioProcessorEngine (src/lib/audio)"]
+        end
+    end
+    
+    subgraph TestGuardrails["CI & Testing Guardrails"]
+        Vitest["Vitest Unit Suite (src/**/*.{test,spec}.ts)"]
+        Playwright["Playwright E2E Smoke Tests (e2e/smoke.spec.ts)"]
+        AstroCheck["Astro Check Type & Diagnostic Verification"]
+    end
+
+    Client --> Layout
+    Layout --> StaticPages
+    P_Home --> Island_Games
+    P_Home --> Island_FX
+    P_Audio --> Island_Audio
+    Island_Audio --> Lib_Audio
+    P_Print --> ContentLayer
+    P_Blog --> ContentLayer
+    
+    Lib_Audio -.-> Vitest
+    AstroMonolith -.-> AstroCheck
+    AstroMonolith -.-> Playwright
+```
+
+---
+
 ## 🏗️ Project Structure
 
 The codebase uses a **Unified Astro Monolith** directory layout:
 
 ```text
-src/
-├── apps/                 # Integrated feature applications & experiment modules
-│   ├── arcade/           # Desktop OS, game cartridges (Pong, Racing3D)
-│   ├── audio-lab/        # Creative Audio Lab (Tone.js synth & controls)
-│   └── 3d-lab/           # 3D Printing Lab & Hardware Docs
-├── components/           # UI component hierarchy
-│   ├── ui/               # Shared UI elements (Navbar, SpaceBackground, Window controls)
-│   ├── games/            # Game canvas components & controls
-│   ├── audio/            # AudioProcessor & oscilloscope canvas visualizer
-│   └── 3d-printing/      # Printer specs & model renderers
-├── content/              # Type-safe blog posts & printer data
-│   ├── blog/             # General dev logs (MDX)
-│   ├── printing/         # 3D printing posts (MDX)
-│   └── printer_data/     # Klipper config files (printer.cfg, mainsail.conf, etc.)
-├── lib/                  # Core domain engines & utility libraries
-│   ├── physics/          # Cannon-es physics wrappers
-│   ├── audio/            # Tone.js AudioProcessorEngine & Waveform analyzer
-│   └── graphics/         # Three.js scene setup & shaders
-├── layouts/              # Base HTML wrappers (Layout.astro)
-├── pages/                # Route entry points (/index.astro, /audio, /3d-printing, etc.)
-└── styles/               # Global CSS & design system tokens
+goobface/
+├── .github/              # GitHub Actions workflows & PR templates
+│   └── workflows/        # CI automation (agent-gatekeeper.yml)
+├── e2e/                  # End-to-end headless browser smoke tests (Playwright)
+├── public/               # Public static assets & favicon
+├── src/
+│   ├── apps/             # Integrated feature application containers
+│   │   ├── audio-lab/    # Creative Audio Lab app container
+│   │   └── 3d-lab/       # 3D Printing Lab & Hardware Docs container
+│   ├── components/       # UI component hierarchy & client islands
+│   │   ├── ui/           # Shared UI (Navbar, SpaceBackground starfield)
+│   │   ├── games/        # Game islands (Pong, BlockBreaker, Racing3D)
+│   │   └── audio/        # AudioProcessor & oscilloscope canvas visualizer
+│   ├── content/          # Type-safe content collections & data
+│   │   ├── blog/         # General dev logs (MDX)
+│   │   ├── printing/     # 3D printing posts (MD)
+│   │   └── printer_data/ # Klipper config files (.cfg, .conf)
+│   ├── layouts/          # Base HTML layouts (Layout.astro, BlogPost.astro)
+│   ├── lib/              # Core domain engines & utility libraries
+│   │   └── audio/        # Tone.js AudioProcessorEngine & Vitest unit tests
+│   ├── pages/            # Astro route entry points
+│   │   ├── index.astro   # Desktop OS & Game Island (/)
+│   │   ├── audio/        # Creative Audio Lab (/audio)
+│   │   ├── 3d-printing/  # 3D Printing Lab & Klipper config viewer (/3d-printing)
+│   │   └── blog/         # Technical blog logs (/blog)
+│   ├── styles/           # Global CSS & Tailwind design tokens
+│   └── content.config.ts # Content collection schema definitions
+├── Dockerfile            # Multi-stage container definition
+├── docker-compose.yml    # Development container orchestration
+├── playwright.config.ts  # Playwright configuration
+├── tsconfig.json         # Strict TypeScript configuration
+└── vitest.config.ts      # Vitest unit test configuration
 ```
 
 ---
@@ -79,6 +147,12 @@ npm run dev
 
 # Check TypeScript & Astro diagnostics
 npm run astro check
+
+# Run unit test suite (Vitest)
+npm run test:ci
+
+# Run end-to-end smoke tests (Playwright)
+npx playwright test
 
 # Build production static bundle
 npm run build
