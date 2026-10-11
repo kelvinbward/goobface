@@ -2,21 +2,19 @@
 
 ## 📋 Service Role
 **Personal Creative Monolith**.
-- **Domain**: `goobface.com`
+- **Domain**: `goobface.com` (hosted on GitHub Pages)
 - **Function**: Unified repository consolidating creative applications, experiments, games, audio tools (`creativeAudioJS`), and documentation (`3d-printing`).
 - **Stack**: Astro + Phaser + Three.js + Tone.js.
 
 ## 📡 Service Topology
 | Context | Hostname | Port | Visibility |
 | :--- | :--- | :--- | :--- |
-| **Gateway** | `gateway-app-1` | `81` | Public |
-| **Monolith App** | `goobface-app-1` | `4321` | Main Site & Labs |
+| **Monolith App** | `goobface-app` | `4321` | Main Site & Labs |
 
 ## 🚀 Execution Modes
 | Mode | Config | Command | Description |
 | :--- | :--- | :--- | :--- |
-| **Cluster** | `docker-compose.yml` | `docker compose up -d` | Production internal network. |
-| **Standalone** | `docker-compose.standalone.yml` | `docker compose -f ... up` | **Port 4321**. Isolated dev. |
+| **Development** | `docker-compose.yml` | `docker compose up` | **Port 4321**. Local dev environment. |
 
 ## 🔄 Handoff Protocol
 1.  **Monorepo Consolidation**: All integrated applications and public distribution paths are directly editable within this repository.
@@ -24,4 +22,3 @@
 
 ## 🤝 Collaborative Workflow
 - **Branching**: `feature/` (Games/Content/Apps), `infra/` (Config/Infrastructure).
-

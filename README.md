@@ -86,16 +86,9 @@ npm run build
 
 ### 🐳 Docker Execution
 
-#### Standalone Mode (Development)
-Exposes port 4321 for direct local testing:
 ```bash
-docker-compose -f docker-compose.standalone.yml up
-```
-
-#### Private Cloud Mode (Cluster)
-Runs internally behind the reverse-proxy gateway (`gateway-app-1`):
-```bash
-docker-compose up -d
+# Build and run local development container (port 4321)
+docker compose up
 ```
 
 ---
