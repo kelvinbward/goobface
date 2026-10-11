@@ -1,0 +1,28 @@
+{
+  "src/apps": [
+    ".gitkeep",
+    "3d-lab",
+    "audio-lab"
+  ],
+  "src/components/games": [
+    "BlockBreaker.astro",
+    "GameIsland.astro",
+    "Pong.astro",
+    "Racing3D.astro"
+  ],
+  "src/components/ui": [
+    "Navbar.astro",
+    "SpaceBackground.astro"
+  ],
+  "src/content": [
+    "blog",
+    "printer_data",
+    "printing"
+  ],
+  "src/pages": [
+    "3d-printing",
+    "audio",
+    "blog",
+    "index.astro"
+  ]
+}
