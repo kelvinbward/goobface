@@ -26,6 +26,17 @@ jobs:
           node-version: 22
           cache: 'npm'
 
+      - name: Validate Docker Compose
+        run: docker compose -f docker-compose.yml config
+
+      - name: Verify AGENTS.md exists
+        run: |
+          if [ ! -f AGENTS.md ]; then
+            echo "Error: AGENTS.md is missing!"
+            exit 1
+          fi
+          echo "AGENTS.md exists."
+
       - name: Clean install
         run: npm ci
 
