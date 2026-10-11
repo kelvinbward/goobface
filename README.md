@@ -106,24 +106,24 @@ goobface/
 ├── public/               # Public static assets & favicon
 ├── src/
 │   ├── apps/             # Integrated feature application containers
-│   │   ├── audio-lab/    # Creative Audio Lab app container
-│   │   └── 3d-lab/       # 3D Printing Lab & Hardware Docs container
+│   │   ├── 3d-lab/       # 3D Printing Lab & Hardware Docs container
+│   │   └── audio-lab/    # Creative Audio Lab app container
 │   ├── components/       # UI component hierarchy & client islands
-│   │   ├── ui/           # Shared UI (Navbar, SpaceBackground starfield)
-│   │   ├── games/        # Game islands (Pong, BlockBreaker, Racing3D)
-│   │   └── audio/        # AudioProcessor & oscilloscope canvas visualizer
+│   │   ├── audio/        # AudioProcessor.astro component
+│   │   ├── games/        # Game islands (Pong.astro, BlockBreaker.astro, Racing3D.astro, GameIsland.astro)
+│   │   └── ui/           # Shared UI (Navbar.astro, SpaceBackground.astro)
 │   ├── content/          # Type-safe content collections & data
 │   │   ├── blog/         # General dev logs (MDX)
-│   │   ├── printing/     # 3D printing posts (MD)
-│   │   └── printer_data/ # Klipper config files (.cfg, .conf)
+│   │   ├── printer_data/ # Klipper config files (.cfg, .conf)
+│   │   └── printing/     # 3D printing posts (MD)
 │   ├── layouts/          # Base HTML layouts (Layout.astro, BlogPost.astro)
 │   ├── lib/              # Core domain engines & utility libraries
-│   │   └── audio/        # Tone.js AudioProcessorEngine & Vitest unit tests
+│   │   └── audio/        # Tone.js AudioProcessorEngine (processor.ts) & Vitest unit tests
 │   ├── pages/            # Astro route entry points
-│   │   ├── index.astro   # Desktop OS & Game Island (/)
-│   │   ├── audio/        # Creative Audio Lab (/audio)
 │   │   ├── 3d-printing/  # 3D Printing Lab & Klipper config viewer (/3d-printing)
-│   │   └── blog/         # Technical blog logs (/blog)
+│   │   ├── audio/        # Creative Audio Lab (/audio)
+│   │   ├── blog/         # Technical blog logs (/blog)
+│   │   └── index.astro   # Desktop OS & Game Island (/)
 │   ├── styles/           # Global CSS & Tailwind design tokens
 │   └── content.config.ts # Content collection schema definitions
 ├── Dockerfile            # Multi-stage container definition
