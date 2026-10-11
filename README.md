@@ -104,6 +104,9 @@ goobface/
 │   └── workflows/        # CI automation (agent-gatekeeper.yml)
 ├── e2e/                  # End-to-end headless browser smoke tests (Playwright)
 ├── public/               # Public static assets & favicon
+├── scripts/              # Build, validation & generator scripts
+│   ├── generate-arch-map.mjs # Generates architecture map (.agents/architecture-map.json)
+│   └── verify-docs.mjs       # Validates doc path references exist on disk
 ├── src/
 │   ├── apps/             # Integrated feature application containers
 │   │   ├── 3d-lab/       # 3D Printing Lab & Hardware Docs container
