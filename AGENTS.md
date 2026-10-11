@@ -1,24 +1,17 @@
-# 🧠 Service: Personal Creative Monolith (goobface)
+# Service: Personal Creative Monolith (goobface)
+**Repository Overview**: Astro monolith containing creative apps, games, audio tools, and printing docs.
 
-## 📋 Service Role
-**Personal Creative Monolith**.
-- **Domain**: `goobface.com` (hosted on GitHub Pages)
-- **Function**: Unified repository consolidating creative applications, experiments, games, audio tools (`creativeAudioJS`), and documentation (`3d-printing`).
-- **Stack**: Astro + Phaser + Three.js + Tone.js.
+## Core CLI Commands
+- `npm run dev`: Start development server.
+- `npm run build`: Build for production.
+- `npm run astro check`: Run type and Astro checking.
+- `docker compose up`: Run in Docker.
 
-## 📡 Service Topology
-| Context | Hostname | Port | Visibility |
-| :--- | :--- | :--- | :--- |
-| **Monolith App** | `goobface-app` | `4321` | Main Site & Labs |
+## Standard SSR Safety Rule
+**NEVER** import browser-only canvas/sound libraries (`three`, `tone`, `cannon-es`, `phaser`) in Astro component frontmatter. These must only be imported inside client-side `<script>` tags.
 
-## 🚀 Execution Modes
-| Mode | Config | Command | Description |
-| :--- | :--- | :--- | :--- |
-| **Development** | `docker-compose.yml` | `docker compose up` | **Port 4321**. Local dev environment. |
-
-## 🔄 Handoff Protocol
-1.  **Monorepo Consolidation**: All integrated applications and public distribution paths are directly editable within this repository.
-2.  **Workflow**: Push to `feature/` or `infra/` branch. Create PR to `main`.
-
-## 🤝 Collaborative Workflow
-- **Branching**: `feature/` (Games/Content/Apps), `infra/` (Config/Infrastructure).
+## Agent Routing Pointers
+For specific domain tasks, refer to the guides in `.agents/`:
+- **Audio**: See `.agents/audio.md`
+- **Games**: See `.agents/games.md`
+- **Klipper/Configs**: See `.agents/klipper.md`
