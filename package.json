@@ -7,9 +7,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "docs:verify": "node scripts/verify-docs.mjs",
+    "docs:map": "node scripts/generate-arch-map.mjs",
     "test": "vitest run --reporter=dot",
     "test:watch": "vitest",
-    "test:ci": "vitest run"
+    "test:ci": "vitest run",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
