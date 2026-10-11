@@ -13,11 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate Cluster Mode Docker Compose
+      - name: Validate Docker Compose
         run: docker compose -f docker-compose.yml config
-
-      - name: Validate Standalone Mode Docker Compose
-        run: docker compose -f docker-compose.standalone.yml config
 
       - name: Verify AGENTS.md exists
         run: |
